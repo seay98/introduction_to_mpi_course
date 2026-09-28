@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
    {
       c+=a[i]*b[i];
    }
-   printf(" %4.2f ", c);
+   printf(" %4.2f \n", c);
 
    return 0;
 }

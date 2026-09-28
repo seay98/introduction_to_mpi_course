@@ -20,7 +20,8 @@ int main(int argc, char *argv[])
       printf("Hello from process %d of %d\n", mpi_rank, num_of_ranks);
       for (int i = 1; i < num_of_ranks; i++)
       {
-         MPI_Recv(&mpi_rank_receive, 1, MPI_INT, i, i, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+         // MPI_Recv(&mpi_rank_receive, 1, MPI_INT, i, i, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+         MPI_Recv(&mpi_rank_receive, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
          printf("Hello from process %d of %d\n", mpi_rank_receive, num_of_ranks);
       }
    }
