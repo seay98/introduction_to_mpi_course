@@ -38,8 +38,6 @@ int main(int argc, char *argv[])
       MPI_Send(&b[offset], elements_per_rank, MPI_DOUBLE, i, i + 2 * num_of_ranks, MPI_COMM_WORLD);
       offset += elements_per_rank;
     }
-    free(a);
-    free(b);
   }
 
   if (mpi_rank != 0) {
@@ -58,8 +56,6 @@ int main(int argc, char *argv[])
     }
     // Each rank sends its partial dot product to rank 0
     MPI_Send(&c, 1, MPI_DOUBLE, 0, mpi_rank, MPI_COMM_WORLD);
-    free(a);
-    free(b);
   }
 
   // Rank 0 receives the partial dot products and sums them up

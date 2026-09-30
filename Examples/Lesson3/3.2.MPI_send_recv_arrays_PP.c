@@ -1,0 +1,67 @@
+#if defined _MPI
+#include <mpi.h>
+#endif
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+   int mpi_rank = 0;
+   int num_of_ranks = 1;
+   int number_of_elements;
+   double *vector;
+
+#if defined _MPI
+   MPI_Init(&argc, &argv);
+   MPI_Comm_size(MPI_COMM_WORLD, &num_of_ranks);
+   MPI_Comm_rank(MPI_COMM_WORLD, &mpi_rank);
+#endif
+
+   // Initialize vector
+   if (mpi_rank == 0)
+   {
+      number_of_elements = 5;
+      vector = (double *)calloc(number_of_elements, sizeof(double));
+      for (int i = 0; i < number_of_elements; i++)
+      {
+         vector[i] = (double)i;
+      }
+   }
+
+#if defined _MPI
+   // Process/Rank 0 send the vector to all other ranks
+   if (mpi_rank == 0)
+   {
+      for (int i = 1; i < num_of_ranks; i++)
+      {
+         MPI_Send(&number_of_elements, 1, MPI_INT, i, i, MPI_COMM_WORLD);
+         MPI_Send(&vector[0], number_of_elements, MPI_DOUBLE, i, 
+         i + num_of_ranks, MPI_COMM_WORLD);
+      }
+   }
+
+   // Every other process receives the rank
+   if (mpi_rank != 0)
+   {
+      MPI_Recv(&number_of_elements, 1, MPI_INT, 0, mpi_rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      vector = (double *)calloc(number_of_elements, sizeof(double));
+      printf("MPI rank %d Received from %d, the number of elements : %d\n", mpi_rank, 0, number_of_elements);
+      MPI_Recv(&vector[0], number_of_elements, MPI_DOUBLE, 0, mpi_rank + num_of_ranks, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+   }
+#endif
+
+   // Every rank prints vectors
+   printf("Vector from rank %d : ", mpi_rank);
+   for (int i = 0; i < number_of_elements; i++)
+   {
+      printf(" %4.2f ", vector[i]);
+   }
+   printf("\n");
+
+   // Finalize the MPI environment
+#if defined _MPI
+   MPI_Finalize();
+#endif
+
+   return 0;
+}

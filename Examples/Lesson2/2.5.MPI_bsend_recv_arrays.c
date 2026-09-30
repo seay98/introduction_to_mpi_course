@@ -16,14 +16,17 @@ int main(int argc, char *argv[])
 
    // Allocate and attach a user-provided MPI buffer used for Bsend
    // The global variable MPI_BSEND_OVERHEAD accounts for extra space required by MPI per message
-   int mpi_buffer_size = sizeof(int) + MPI_BSEND_OVERHEAD;
+   int mpi_buffer_size = sizeof(int); // + MPI_BSEND_OVERHEAD;
+   printf(" %ld ", sizeof(int) );
+   printf(" %8d ", MPI_BSEND_OVERHEAD);
+   printf(" %8d ", mpi_buffer_size);
    double *mpi_buffer = (double *)malloc(mpi_buffer_size);
    MPI_Buffer_attach(mpi_buffer, mpi_buffer_size);
 
    // Initialize vector
    if (mpi_rank == 0)
    {
-      number_of_elements = 5;
+      number_of_elements = 500;
       vector = (double *)calloc(number_of_elements, sizeof(double));
       for (int i = 0; i < number_of_elements; i++)
       {
