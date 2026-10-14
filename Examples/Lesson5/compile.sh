@@ -1,0 +1,1 @@
+mpicc -O3 ../Libraries/mt19937ar.h ../Libraries/arrays.h ../Libraries/linearalgebra.h MPI_dgemv.c -o MPI_dgemv -lm
