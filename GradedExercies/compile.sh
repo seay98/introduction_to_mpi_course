@@ -1,0 +1,1 @@
+mpicc -O3 Libraries/mt19937ar.h Libraries/arrays.h Libraries/linearalgebra.h mpi_abc.c -o mpi_abc -lm
