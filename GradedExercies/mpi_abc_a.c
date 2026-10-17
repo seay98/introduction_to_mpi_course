@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
     num_of_rows_per_rank += num_of_residual;
   }
 
-  vector_out = allocate_1d_double(&n);
+  vector_out = allocate_1d_double(&num_of_rows_per_rank);
 
   // Measure time before operations
   double t1 = MPI_Wtime();
@@ -126,12 +126,12 @@ int main(int argc, char* argv[]) {
     MPI_Reduce(MPI_IN_PLACE, &dt0, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(MPI_IN_PLACE, &dt1, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(MPI_IN_PLACE, &dt2, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(MPI_IN_PLACE, &dt3, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(MPI_IN_PLACE, &dt3, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   } else {
     MPI_Reduce(&dt0, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&dt1, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&dt2, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&dt3, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&dt3, NULL, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   }
   if (mpi_rank == 0) {
     printf("Average intiialization time per rank: %f seconds\n",
@@ -140,8 +140,7 @@ int main(int argc, char* argv[]) {
            dt1 / ((double)num_of_ranks));
     printf("Average reduction time per rank     : %f seconds\n",
            dt2 / ((double)num_of_ranks));
-    printf("Average Total time per rank         : %f seconds\n",
-           dt3 / ((double)num_of_ranks));
+    printf("Total time         : %f seconds\n", dt3);
   }
 
   MPI_Finalize();

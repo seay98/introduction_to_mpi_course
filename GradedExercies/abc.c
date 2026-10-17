@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
   dgemv(&n, &m, matrix_a, vector_mid, vector_out);
 
   // Calculte norm
-  double norm = sqrt(ddot(&m, vector_out, vector_out));
+  double norm = sqrt(ddot(&n, vector_out, vector_out));
 
   clock_gettime(CLOCK_MONOTONIC, &end);
   double elapsed =
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 
   // print_2d_double(&m, &k, matrix_b);
   // print_1d_double(&k, vector_c);
-  // print_1d_double(&m, vector_mid);
+  // print_1d_double(&n, vector_out);
   printf("Norm of the output vector is : %4.10f\n", norm);
   printf("Elapsed time: %.6f seconds\n", elapsed);
   return 0;
