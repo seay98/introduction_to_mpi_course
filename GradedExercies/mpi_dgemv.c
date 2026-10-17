@@ -123,9 +123,6 @@ int main(int argc, char* argv[]) {
     MPI_Reduce(&dt3, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
   }
   if (mpi_rank == 0) {
-    print_2d_double(&rows, &cols, matrix_in);
-    print_1d_double(&cols, vector_in);
-    print_1d_double(&rows, vector_out);
     printf("Average intiialization time per rank: %f seconds\n",
            dt0 / ((double)num_of_ranks));
     printf("Average calculation time per rank   : %f seconds\n",

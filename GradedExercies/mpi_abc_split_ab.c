@@ -171,45 +171,36 @@ int main(int argc, char* argv[]) {
   double t6 = MPI_Wtime();
 
   // Compute time differences and print them
-  double dt0 = t1 - t0;  // Time taken for initialization Bc
-  double dt1 = t2 - t1;  // Time taken for calculation Bc
-  double dt2 = t3 - t2;  // Time taken for reduction to get vector_mid
-  double dt3 = t4 - t3;  // Time to initialize Ax
-  double dt4 = t5 - t4;  // Time taken for calculation Ax
-  double dt5 = t6 - t5;  // Time taken for reduction to get norm
-  double dt6 = t6 - t0;  // Total time
+  double dt0 = t1 - t0;    // Time taken for initialization Bc
+  double dt1 = t2 - t1;    // Time taken for calculation Bc
+  double dt2 = t3 - t2;    // Time taken for reduction to get vector_mid
+  double dt3 = t4 - t3;    // Time to initialize Ax
+  double dt4 = t5 - t4;    // Time taken for calculation Ax
+  double dt5 = t6 - t5;    // Time taken for reduction to get norm
+  double dt6 = t6 - t0;    // Total time
+  double dt7 = dt0 + dt3;  // Total time for initialization
+  double dt8 = dt1 + dt4;  // Total time for calculation
+  double dt9 = dt2 + dt5;  // Total time for reduction
 
   if (mpi_rank == 0) {
-    MPI_Reduce(MPI_IN_PLACE, &dt0, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(MPI_IN_PLACE, &dt1, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(MPI_IN_PLACE, &dt2, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(MPI_IN_PLACE, &dt3, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(MPI_IN_PLACE, &dt4, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(MPI_IN_PLACE, &dt5, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(MPI_IN_PLACE, &dt7, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(MPI_IN_PLACE, &dt8, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(MPI_IN_PLACE, &dt9, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(MPI_IN_PLACE, &dt6, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   } else {
-    MPI_Reduce(&dt0, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&dt1, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&dt2, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&dt3, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&dt4, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&dt5, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&dt7, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&dt8, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&dt9, NULL, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&dt6, NULL, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   }
   if (mpi_rank == 0) {
-    printf("Average intiialization of Bc time per rank: %f seconds\n",
-           dt0 / ((double)num_of_ranks));
-    printf("Average calculation of Bc time per rank   : %f seconds\n",
-           dt1 / ((double)num_of_ranks));
-    printf("Average reduction of vector_mid time per rank: %f seconds\n",
-           dt2 / ((double)num_of_ranks));
-    printf("Average intiialization of Ax time per rank: %f seconds\n",
-           dt3 / ((double)num_of_ranks));
-    printf("Average calculation of Ax time per rank   : %f seconds\n",
-           dt4 / ((double)num_of_ranks));
-    printf("Average reduction of norm time per rank: %f seconds\n",
-           dt5 / ((double)num_of_ranks));
-    printf("Total time         : %f seconds\n", dt6);
+    printf("Average intiialization time per rank: %f seconds\n",
+           dt7 / ((double)num_of_ranks));
+    printf("Average calculation time per rank   : %f seconds\n",
+           dt8 / ((double)num_of_ranks));
+    printf("Average reduction time per rank     : %f seconds\n",
+           dt9 / ((double)num_of_ranks));
+    printf("Total time                          : %f seconds\n", dt6);
   }
 
   MPI_Finalize();

@@ -16,8 +16,8 @@ module load toolchain/foss
 export OMP_NUM_THREADS= $SLURM_CPUS_PER_TASK
 
 for i in 1 2 4 8 16 32 64 128 ; do
-	time srun -n $i mpi_abc_split_a.out
-    time srun -n $i mpi_abc_split_ab.out
+	srun -n $i mpi_abc_split_a.out
+    srun -n $i mpi_abc_split_ab.out
 done
 
 echo "== Finished job ${SLURM_JOBID} at $(date)"
