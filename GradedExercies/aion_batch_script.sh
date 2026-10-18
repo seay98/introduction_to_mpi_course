@@ -13,7 +13,7 @@
 echo "== Starting job ${SLURM_JOBID} at $(date)"
 
 module load toolchain/foss
-export OMP_NUM_THREADS= $SLURM_CPUS_PER_TASK
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 for i in 1 2 4 8 16 32 64 128 ; do
 	srun -n $i mpi_abc_split_a.out
