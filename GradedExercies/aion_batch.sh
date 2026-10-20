@@ -7,8 +7,8 @@
 #SBATCH -p batch
 #SBATCH --reservation=mpi_course 
 #SBATCH --exclusive 
-#SBATCH --output Slurm_%x_%j.log
-#SBATCH --error  Slurm_%x_%j.log
+#SBATCH --output slurm_%x_%j.log
+#SBATCH --error  slurm_%x_%j.log
 
 echo "== Starting job ${SLURM_JOBID} at $(date)"
 
@@ -16,7 +16,6 @@ module load toolchain/foss
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 for i in 1 2 4 8 16 32 64 128 ; do
-	srun -n $i mpi_abc_split_a.out
     srun -n $i mpi_abc_split_ab.out
 done
 
