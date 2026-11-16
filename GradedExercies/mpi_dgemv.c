@@ -49,7 +49,8 @@ int main(int argc, char* argv[]) {
     vector_in = allocate_1d_double(&cols);
     matrix_in = allocate_2d_packed_double(&rows, &cols);
     init_random_matrix(seed, &rows, &cols, matrix_in);
-    init_random_vector(seed + 10, &cols, vector_in);
+    // print_2d_double(&rows, &cols, matrix_in);
+    init_random_vector(seed, &cols, vector_in);
   } else {
     vector_in = allocate_1d_double(&cols);
     matrix_in =
@@ -58,6 +59,7 @@ int main(int argc, char* argv[]) {
 
   // Bcast all vector b to all ranks
   MPI_Bcast(&vector_in[0], cols, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  // print_1d_double(&cols, vector_in);
 
   // Distribute matrix A to all ranks.
   if (mpi_rank == 0) {
@@ -71,6 +73,7 @@ int main(int argc, char* argv[]) {
     MPI_Recv(&matrix_in[0][0], num_of_matrix_elements_per_rank * cols,
              MPI_DOUBLE, 0, mpi_rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   }
+  // print_2d_double(&num_of_matrix_elements_per_rank, &cols, matrix_in);
   // Rank 0 has more elements of the matrix
   if (mpi_rank == 0) {
     num_of_matrix_elements_per_rank += num_of_residual_elements;
@@ -84,6 +87,7 @@ int main(int argc, char* argv[]) {
   // Compute "local" dgemv operation
   dgemv(&num_of_matrix_elements_per_rank, &cols, matrix_in, vector_in,
         vector_out);
+  // print_1d_double(&num_of_matrix_elements_per_rank, vector_out);
 
   // Compute "local dot product"
   double norm = ddot(&num_of_matrix_elements_per_rank, vector_out, vector_out);
